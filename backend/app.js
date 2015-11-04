@@ -2,10 +2,11 @@
 /**
  * Module dependencies.
  */
+var debug = require('debug');
 
 var express = require('express')
   , routes = require('./routes')
-  , images = require('./routes/show')
+  , images = require('./routes/show');
 
 var app = module.exports = express.createServer();
 
