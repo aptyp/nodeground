@@ -4,7 +4,8 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+  , routes = require('./routes')
+  , images = require('./routes/show')
 
 var app = module.exports = express.createServer();
 
