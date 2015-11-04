@@ -4,10 +4,10 @@
  */
 var debug = require('debug');
 
-var express = require('express')
-  , http = require('http')
-  , routes = require('./routes')
-  , images = require('./routes/show');
+var express   = require('express')
+  , http      = require('http')
+  , routes    = require('./routes')
+  , images    = require('./routes/show');
 
 var app = module.exports = express.createServer();
 
@@ -34,7 +34,7 @@ app.configure('production', function(){
 
 app.get('/',    routes.index);
 app.get('/show', function(res, req) {
-  res.
+  res.send("SHOWING");
 });
 
 app.listen(3000, function(){
