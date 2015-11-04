@@ -5,6 +5,7 @@
 var debug = require('debug');
 
 var express = require('express')
+  , http = require('http')
   , routes = require('./routes')
   , images = require('./routes/show');
 
@@ -33,7 +34,7 @@ app.configure('production', function(){
 
 app.get('/',    routes.index);
 app.get('/show', function(res, req) {
-  res.send(200);
+  res.
 });
 
 app.listen(3000, function(){
