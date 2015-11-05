@@ -3,6 +3,6 @@
  * GET show call
  */
 
-exports.index = function(req, res){
+exports.showme = function(req, res){
   res.render('showme', { title: 'Show' })
 };
