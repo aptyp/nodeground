@@ -1,9 +1,9 @@
 var express         =       require("express");
 var multer          =       require('multer');
-var app             =       express();
-var upload      =   multer({ dest: './uploads/'});
+var app = module.exports = express.createServer();
+var upload      =   multer({ dest: './storage/'});
 
-app.use(multer({ dest: './uploads/',
+app.use(multer({ dest: './storage/',
     rename: function (fieldname, filename) {
         return filename+Date.now();
     },

@@ -2,7 +2,7 @@ var http = require('http'),
     fs = require('fs'),
     path = require('path'),
     url = require('url');
-    imageDir = '/opt/node/gall/backend/storage/';
+    imageDir = '/opt/node/gall/storage/';
  
 http.createServer(function (req, res) {
     var query = url.parse(req.url,true).query;
