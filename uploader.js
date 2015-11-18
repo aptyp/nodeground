@@ -31,7 +31,7 @@ app.post('/', multer({ dest: './storage/'}).single('upl'), function(req,res){
               path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
               size: 277056 }
 	 */
-	res.status(401).redirect('http://162.210.92.11:3000');
+	res.status(401).redirect('http://162.210.92.11:80');
 	//res.status(204).end();
 });
 

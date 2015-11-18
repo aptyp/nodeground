@@ -10,7 +10,7 @@ http.createServer(function (req, res) {
  
     if (typeof pic === 'undefined') {
         getImages(imageDir, function (err, files) {
-            var imageLists = '<div align=center>';
+            var imageLists = '<div align=center><div><a href="http://162.210.92.11:3001/">UPLOAD SOMETHING</a></div>';
             for (var i=0; i<files.length; i++) {
                 imageLists += '<div><a href="/?image=' + files[i] + '"><img src="/?image=' + files[i] + '" style="height: auto; width: auto; max-width: 400px; max-height: 400px;" /></a></div>';
             }
@@ -31,14 +31,14 @@ http.createServer(function (req, res) {
         });
     }
  
-}).listen(3000);
-console.log("Server running at http://localhost:3000/");
+}).listen(80);
+console.log("Server running at http://localhost:80/");
  
 function getImages(imageDir, callback) {
     var fileType = '.jpg',
         files = [], i;
     fs.readdir(imageDir, function (err, list) {
-        for(i=list.length; i > 0; i--) {
+        for(i=0; i < list.length; i++) {
            files.push(list[i]); 
         }
         callback(err, files);
