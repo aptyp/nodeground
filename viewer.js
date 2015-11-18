@@ -38,10 +38,8 @@ function getImages(imageDir, callback) {
     var fileType = '.jpg',
         files = [], i;
     fs.readdir(imageDir, function (err, list) {
-        for(i=0; i<list.length; i++) {
-            if(path.extname(list[i]) === fileType) {
-                files.push(list[i]); 
-            }
+        for(i=list.length; i > 0; i--) {
+           files.push(list[i]); 
         }
         callback(err, files);
     });
