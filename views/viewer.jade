@@ -1,0 +1,6 @@
+extends layout
+block pageContent
+ .cont(align="center")
+   h1 Image Gallery
+   each image in images
+    img(src="/storage/"+image)

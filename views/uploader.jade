@@ -1,11 +1,12 @@
-html
-	head
-		title
-	body
-		form(method="post",enctype="multipart/form-data",action="/")
-			p
-				input(type="text",name="title",placeholder="title")
-			p
-				input(type="file",name="upl")
-			p
-				input(type="submit")
+extends layout
+block pageContent
+  .cont(align="center")
+   h1 Upload your images here
+   .f1
+    form(method="post",enctype="multipart/form-data",action="/")
+     .f2
+      input(type="file",name="upl")
+     .f3
+      input(type="text",name="title",placeholder="Description of image")
+     .f3
+      input(type="submit",value="Upload!")

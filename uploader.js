@@ -13,7 +13,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res){
-  res.render('uploader');
+  res.render('uploader', { title: 'Awesome Gallery Uploader'});
 });
 app.post('/', multer({ dest: './storage/'}).single('upl'), function(req,res){
 	console.log(req.body); //form fields
