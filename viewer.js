@@ -3,7 +3,7 @@ var path	= require('path');
 var fs		= require('fs');
 var bodyParser	= require('body-parser');
 
-var port 	= 81;
+var port 	= 80;
 var app 	= new express();
 
 var imageDir	= path.join(__dirname, 'storage');
@@ -37,7 +37,7 @@ app.get('/', function(req, res) {
 
 
 app.get('/image/:id', function(req,res) {
- res.sendfile(imageDir + '/' + req.params.id);
+ res.sendFile(imageDir + '/' + req.params.id);
 })
 
 app.listen( port, function(){ console.log('listening on port '+port); } );
