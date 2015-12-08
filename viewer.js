@@ -1,46 +1,43 @@
-var http = require('http'),
-    fs = require('fs'),
-    path = require('path'),
-    url = require('url');
-    imageDir = '/opt/node/gall/storage/';
- 
-http.createServer(function (req, res) {
-    var query = url.parse(req.url,true).query;
-        pic = query.image;
- 
-    if (typeof pic === 'undefined') {
-        getImages(imageDir, function (err, files) {
-            var imageLists = '<div align=center><div><a href="http://162.210.92.11:3001/">UPLOAD SOMETHING</a></div>';
-            for (var i=0; i<files.length; i++) {
-                imageLists += '<div><a href="/?image=' + files[i] + '"><img src="/?image=' + files[i] + '" style="height: auto; width: auto; max-width: 400px; max-height: 400px;" /></a></div>';
-            }
-            imageLists += '</div>';
-            res.writeHead(200, {'Content-type':'text/html'});
-            res.end(imageLists);
-        });
-    } else {
-        fs.readFile(imageDir + pic, function (err, content) {
-            if (err) {
-                res.writeHead(400, {'Content-type':'text/html'})
-                console.log(err);
-                res.end("No such image");    
-            } else {
-                res.writeHead(200,{'Content-type':'image/jpg'});
-                res.end(content);
-            }
-        });
-    }
- 
-}).listen(80);
-console.log("Server running at http://localhost:80/");
- 
-function getImages(imageDir, callback) {
-    var fileType = '.jpg',
-        files = [], i;
-    fs.readdir(imageDir, function (err, list) {
-        for(i=0; i < list.length; i++) {
-           files.push(list[i]); 
-        }
-        callback(err, files);
-    });
+var express	= require('express');
+var path	= require('path');
+var fs		= require('fs');
+var bodyParser	= require('body-parser');
+
+var port 	= 81;
+var app 	= new express();
+
+var imageDir	= path.join(__dirname, 'storage');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(bodyParser.json());
+
+// bulding array
+var imageList = []; // {ONE:'1.jpg', TWO:'2.jpg'};
+var files = [];
+
+function getImages(imageDir,callback) {
+ fs.readdir(imageDir, function (err, list){
+  for(var i=0; i < list.length; i++)
+   files.push(list[i]); 
+  callback(null,files);
+ })
+ console.log("inside: "+files);
+ return files;
 }
+
+var imageList = getImages(imageDir, function (err, files){
+ console.log("outside: "+files);
+});
+
+
+app.get('/', function(req, res) {
+ res.render('viewer', { title: 'Awesome Gallery Viewer', images: imageList})
+})
+
+
+app.get('/image/:id', function(req,res) {
+ res.sendfile(imageDir + '/' + req.params.id);
+})
+
+app.listen( port, function(){ console.log('listening on port '+port); } );
