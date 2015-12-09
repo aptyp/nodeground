@@ -1,2 +1,8 @@
-h1= title
-p Welcome to #{title}
+extends layout
+block pageContent
+ .cont(align="center")
+  h1 Image Gallery
+   p
+    #{pictures}
+//     a(href='/image/'+image+"/image.jpg")
+//      img(src="/image/" +image+"/image.jpg")
