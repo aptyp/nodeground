@@ -2,7 +2,7 @@ extends layout
 block pageContent
  .cont(align="center")
   h1 Image Gallery
-   p
-    #{pictures}
-//     a(href='/image/'+image+"/image.jpg")
-//      img(src="/image/" +image+"/image.jpg")
+   div
+   for picture in pictures      
+    a(href='/image/'+picture+"/image.jpg")
+     img(src='/image/'+picture+'/image.jpg')

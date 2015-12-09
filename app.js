@@ -14,21 +14,21 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json());
 
 function getImages(imageDir,callback) {
- var files = [], i;
+ var files = [];
  fs.readdir(imageDir, function (err, list){
+  if(err) return console.error(err)
   for(i=0; i < list.length; i++){
-   files.push(list[i]); 
-   console.log("forloop: " + list[i]); 
+   files.push(list[i]) 
   }
   callback(null,files);
  })
+ return files;
 }
 
-
+//console.log(fakeList)
 app.get('/', function(req, res) {
- res.render('index', { title: 'Awesome Gallery Viewer', pictures: getImages(imageDir, function (err, files){
-  console.log("outside: "+files);
-  return files;
+ res.render('index', { title: 'Awesome Gallery Viewer', pictures: getImages(imageDir, function (err, list){
+  console.log(list)
   })
  })
 })
