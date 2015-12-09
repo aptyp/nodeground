@@ -5,4 +5,5 @@ block pageContent
    a(href='/image/'+photo+"/image.jpg")
     img(src='/image/'+photo+'/image.jpg' style="max-width:650;max-height:650;" )
   h1
-   = photo
+   each photo in photodetails
+    = photo.originalname

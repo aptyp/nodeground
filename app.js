@@ -45,7 +45,17 @@ app.get('/', function(req, res) {
 
 // photo detail page
 app.get('/detail/:id', function(req,res) {
- res.render('detail', { title: 'Awesome Gallery Photo', photo: req.params.id })
+ var db = req.db
+ var collection = db.get('gallery')
+ collection.find({filename : req.params.id}, function(err, data) {
+  if(err) {
+   console.log("could not pull file details from db")
+  }
+  else {
+   console.log("data from db: "+data)
+  }
+  res.render('detail', { title: 'Awesome Gallery Photo', photo: req.params.id, photodetails: data })
+ })
 })
 
 
