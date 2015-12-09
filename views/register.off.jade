@@ -1,0 +1,15 @@
+extends layout
+block pageContent
+  .cont(align="center")
+   h1 New User Registration
+   .f1
+    form(method="post",action="/register")
+     .f2
+      input(type="text",name="user2",placeholder="E-mail Address")
+     .f3
+      input(type="password",name="pass2",placeholder="Password")
+     .f3
+      input(type="submit",name="Register")
+   -if(error)
+    h1 #{error}
+

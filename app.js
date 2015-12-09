@@ -16,6 +16,8 @@ var Account 	= require('./models/account');
 var passport 	= require('passport')
 var LocalStrategy = require('passport-local').Strategy
 
+var routes	= require('./routes/index')
+
 var port 	= 80;
 var app 	= new express();
 
@@ -45,25 +47,10 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+//app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', routes);
 
-// http://mherman.org/blog/2015/01/31/local-authentication-with-passport-and-express-4/#.VminV8oRffA
-//login page
-app.get('/login', function (req,res) {
- res.render('login',{ title: 'Login to Awesome Gallery'})
-})
-
-app.post('/login',
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/loginfail'
-  })
-);
-
-app.get('/loginfail', function(req, res, next) {
- console.log('Failed to authenticate');
- res.render('loginfail')
-});
 
 var Account = require('./models/account');
 passport.use(new LocalStrategy(Account.authenticate()));
@@ -72,48 +59,7 @@ passport.deserializeUser(Account.deserializeUser());
 
 mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
 
-// auth check
-passport.use(new LocalStrategy(function(username, password, done) {
-  process.nextTick(function() {
-   var db = req.db
-   var collection = db.get('auth2')
- 
-   colleciton.findOne({
-      'username': username, 
-    }, function(err, user) {
-      if (err) {
-        return done(err);
-      }
-
-      if (!user) {
-        return done(null, false);
-      }
-
-      if (user.password != password) {
-        return done(null, false);
-      }
-
-      return done(null, user);
-    });
-  });
-}));
-
-// register for account
-app.get('/register', function (req,res) {
- res.render('register',{ title: 'Register for Awesome Gallery'})
-})
-
-app.post('/register', function(req,res) {
- Account.register(new Account({ username : req.body.user2 }), req.body.pass2, function(err, account) {
-  if (err) {
-   res.render('register', {title: 'Register for Awesome Gallery', error: 'all fields required.'});
-  }
-  passport.authenticate('local')(req, res, function () {
-   res.redirect('/');
-  })
- })
-})
-
+module.exports = app;
 
 // needed to browse directory
 function getImages(imageDir,callback) {
@@ -129,7 +75,7 @@ function getImages(imageDir,callback) {
 // default index page
 app.get('/', function(req, res) {
  getImages(imageDir,function(err, photos) {
-  res.render('index', { title: 'Awesome Gallery Viewer', pictures: photos }) 
+  res.render('index', { user: req.user, title: 'Awesome Gallery Viewer', pictures: photos }) 
  })
 })
 
