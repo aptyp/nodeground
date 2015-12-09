@@ -5,7 +5,10 @@
   , "dependencies": {
       "express": "4.13.3"
     , "jade": "1.11.0"
-    , "multer": ">= 1.1.0"
-    , "body-parser": ">= 0.0.1"
+    , "multer": "1.1.0"
+    , "body-parser": "1.14.1"
+    , "mongodb": "~1.4"
+    , "kerberos": "0.0.9"
+    , "monk": "~1.0"
   }
 }

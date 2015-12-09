@@ -4,6 +4,11 @@ var fs		= require('fs');
 var bodyParser	= require('body-parser');
 var multer	= require('multer');
 
+// mongo
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/awesome1');
+
 var port 	= 80;
 var app 	= new express();
 
@@ -12,6 +17,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(bodyParser.json());
+
+// needed for mongo to work
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
+
 
 function getImages(imageDir,callback) {
  var files = [];
@@ -23,22 +36,32 @@ function getImages(imageDir,callback) {
  })
 }
 
+// default index page
 app.get('/', function(req, res) {
  getImages(imageDir,function(err, photos) {
   res.render('index', { title: 'Awesome Gallery Viewer', pictures: photos }) 
  })
 })
 
+// photo detail page
+app.get('/detail/:id', function(req,res) {
+ res.render('detail', { title: 'Awesome Gallery Photo', photo: req.params.id })
+})
+
+
+// individual image server
 app.get('/image/:id/image.jpg', function(req,res) {
  res.statusCode = 200;
  res.setHeader('Content-type', 'image/jpeg');
  res.sendFile(imageDir + '/' + req.params.id);
 })
 
+// upload submit form initial
 app.get('/upload', function(req, res){
   res.render('uploader', { title: 'Awesome Gallery Uploader'});
 });
 
+// upload form POST results
 app.post('/upload', multer({ dest: './storage/'}).single('upl'), function(req,res){
  console.log(req.body); //form fields
  /* example output:
@@ -55,6 +78,17 @@ app.post('/upload', multer({ dest: './storage/'}).single('upl'), function(req,re
    path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
    size: 277056 }
   */
+ // insert into database
+ var db = req.db
+ var collection = db.get('gallery')
+ collection.insert(req.file, function (err, response) {
+  if (err) {
+   console.log("problem inserting into database")
+  }
+  else {
+   console.log("great success, inserted into db")
+  }
+ })
  res.status(401).redirect('http://162.210.92.11');
  //res.status(204).end();
 });
