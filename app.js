@@ -3,20 +3,28 @@ var path	= require('path');
 var fs		= require('fs');
 var bodyParser	= require('body-parser');
 var multer	= require('multer');
-
+var cookieParser = require('cookie-parser')
 // mongo
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk('localhost:27017/awesome1');
+var mongo 	= require('mongodb');
+var monk 	= require('monk');
+var db 		= monk('localhost:27017/awesome1');
+var mongoose 	= require('mongoose');
+
+var Account 	= require('./models/account');
+
+// passport
+var passport 	= require('passport')
+var LocalStrategy = require('passport-local').Strategy
 
 var port 	= 80;
 var app 	= new express();
 
 var imageDir	= path.join(__dirname, 'storage');
+
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(bodyParser.json());
 
 // needed for mongo to work
 // Make our db accessible to our router
@@ -25,7 +33,120 @@ app.use(function(req,res,next){
     next();
 });
 
+// 404 forward
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
 
+
+//middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true } ));
+app.use(cookieParser());
+app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+// http://mherman.org/blog/2015/01/31/local-authentication-with-passport-and-express-4/#.VminV8oRffA
+//login page
+app.get('/login', function (req,res) {
+ res.render('login',{ title: 'Login to Awesome Gallery'})
+})
+
+app.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/loginfail'
+  })
+);
+
+app.get('/loginfail', function(req, res, next) {
+ console.log('Failed to authenticate');
+ res.render('loginfail')
+});
+
+var Account = require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+
+mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
+
+// auth check
+passport.use(new LocalStrategy(function(username, password, done) {
+  process.nextTick(function() {
+   var db = req.db
+   var collection = db.get('auth2')
+ 
+   colleciton.findOne({
+      'username': username, 
+    }, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+
+      if (!user) {
+        return done(null, false);
+      }
+
+      if (user.password != password) {
+        return done(null, false);
+      }
+
+      return done(null, user);
+    });
+  });
+}));
+
+// register for account
+app.get('/register', function (req,res) {
+ res.render('register',{ title: 'Register for Awesome Gallery'})
+})
+
+app.post('/register', function(req,res) {
+ Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+  if (err) {
+   return res.render('register', { account : account });
+  }
+  passport.authenticate('local')(req, res, function () {
+   res.redirect('/');
+  });
+});
+
+
+
+ var user2 = req.body.user2;
+ var pass2 = req.body.pass2;
+ var name2 = req.body.name2;
+ var userarray = { "username": user2, "password": pass2, "fullname": name2 }
+ console.log("user: " +req.body.name2)
+ if (!name2 || !user2 || !pass2) {
+  return res.render('register', {title: 'Register for Awesome Gallery', error: 'all fields required.'});
+ }
+ // insert into database
+ var db = req.db
+ var collection = db.get('auth2')
+ collection.insert(userarray, function (err, response) {
+  if (err) {
+   console.log("problem inserting into database")
+  }
+  else {
+   console.log("great success, inserted into db")
+  }
+ })
+ res.status(401).redirect('http://162.210.92.11');
+})
+
+
+
+// needed to browse directory
 function getImages(imageDir,callback) {
  var files = [];
  fs.readdir(imageDir, function (err, list){
@@ -104,6 +225,32 @@ app.post('/upload', multer({ dest: './storage/'}).single('upl'), function(req,re
 });
 
 
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
+
+
+module.exports = app;
 
 
 app.listen( port, function(){ console.log('listening on port '+port); } );
