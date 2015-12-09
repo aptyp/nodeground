@@ -16,20 +16,16 @@ app.use(bodyParser.json());
 function getImages(imageDir,callback) {
  var files = [];
  fs.readdir(imageDir, function (err, list){
-  if(err) return console.error(err)
   for(i=0; i < list.length; i++){
    files.push(list[i]) 
   }
   callback(null,files);
  })
- return files;
 }
 
-//console.log(fakeList)
 app.get('/', function(req, res) {
- res.render('index', { title: 'Awesome Gallery Viewer', pictures: getImages(imageDir, function (err, list){
-  console.log(list)
-  })
+ getImages(imageDir,function(err, photos) {
+  res.render('index', { title: 'Awesome Gallery Viewer', pictures: photos }) 
  })
 })
 

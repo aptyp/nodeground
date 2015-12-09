@@ -1,8 +1,14 @@
 extends layout
 block pageContent
  .cont(align="center")
-  h1 Image Gallery
-   div
-   for picture in pictures      
-    a(href='/image/'+picture+"/image.jpg")
-     img(src='/image/'+picture+'/image.jpg')
+  h1
+   Image Gallery
+  div
+   - a=0
+   table
+    - for (inc = 0; inc < pictures.length; inc++)
+     if (inc == 0 || inc % 4 == 0)
+      tr
+     td(align="center" width=370 height=370) 
+      a(href='/image/'+pictures[inc]+"/image.jpg")
+       img(src='/image/'+pictures[inc]+'/image.jpg' style="max-width:350;max-height:350;" )
