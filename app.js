@@ -33,17 +33,10 @@ app.use(function(req,res,next){
     next();
 });
 
-// 404 forward
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
 
 //middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true } ));
+app.use(bodyParser.urlencoded({ extended: false } ));
 app.use(cookieParser());
 app.use(require('express-session')({
     secret: 'keyboard cat',
@@ -111,39 +104,15 @@ app.get('/register', function (req,res) {
 })
 
 app.post('/register', function(req,res) {
- Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+ Account.register(new Account({ username : req.body.user2 }), req.body.pass2, function(err, account) {
   if (err) {
-   return res.render('register', { account : account });
+   res.render('register', {title: 'Register for Awesome Gallery', error: 'all fields required.'});
   }
   passport.authenticate('local')(req, res, function () {
    res.redirect('/');
-  });
-});
-
-
-
- var user2 = req.body.user2;
- var pass2 = req.body.pass2;
- var name2 = req.body.name2;
- var userarray = { "username": user2, "password": pass2, "fullname": name2 }
- console.log("user: " +req.body.name2)
- if (!name2 || !user2 || !pass2) {
-  return res.render('register', {title: 'Register for Awesome Gallery', error: 'all fields required.'});
- }
- // insert into database
- var db = req.db
- var collection = db.get('auth2')
- collection.insert(userarray, function (err, response) {
-  if (err) {
-   console.log("problem inserting into database")
-  }
-  else {
-   console.log("great success, inserted into db")
-  }
+  })
  })
- res.status(401).redirect('http://162.210.92.11');
 })
-
 
 
 // needed to browse directory
@@ -229,6 +198,7 @@ app.post('/upload', multer({ dest: './storage/'}).single('upl'), function(req,re
 
 // development error handler
 // will print stacktrace
+/*
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
@@ -251,6 +221,6 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
-
+*/
 
 app.listen( port, function(){ console.log('listening on port '+port); } );

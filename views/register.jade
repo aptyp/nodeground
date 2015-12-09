@@ -5,8 +5,6 @@ block pageContent
    .f1
     form(method="post",action="/register")
      .f2
-      input(type="text",name="name2",placeholder="Full Name")
-     .f2
       input(type="text",name="user2",placeholder="E-mail Address")
      .f3
       input(type="password",name="pass2",placeholder="Password")
@@ -14,4 +12,4 @@ block pageContent
       input(type="submit",name="Register")
    -if(error)
     h1 #{error}
-    
+
