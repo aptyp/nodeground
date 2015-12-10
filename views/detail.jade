@@ -1,9 +1,10 @@
 extends layout
-block pageContent
- .cont(align="center")
-  div
-   a(href='/image/'+photo+"/image.jpg")
-    img(src='/image/'+photo+'/image.jpg' style="max-width:650;max-height:650;" )
-  h1
-   each photo in photodetails
-    = photo.originalname
+
+block content
+  .container(align="center")
+   div
+    a(href='/image/'+photo+"/image.jpg")
+     img(src='/image/'+photo+'/image.jpg' style="max-width:650;max-height:650;" )
+   h1
+    each photo in photodetails
+     = photo.originalname

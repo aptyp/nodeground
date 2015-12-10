@@ -12,7 +12,7 @@ router.get('/', function (req, res) {
 */
 
 router.get('/register', function(req, res) {
-    res.render('register', { });
+    res.render('register', { title: 'Register for Awesome Gallery'});
 });
 
 router.post('/register', function(req, res) {
@@ -28,7 +28,7 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
+    res.render('login', { user : req.user, title: 'Login to Awesome Gallery'});
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {

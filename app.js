@@ -10,6 +10,15 @@ var monk 	= require('monk');
 var db 		= monk('localhost:27017/awesome1');
 var mongoose 	= require('mongoose');
 
+var https 	= require('https');
+var key		= fs.readFileSync('sslcert/iamverycool.com.key', 'utf8');
+var cert	= fs.readFileSync('sslcert/iamverycool.com.crt', 'utf8');
+
+var https_options = {
+    key: key,
+    cert: cert
+};
+
 var Account 	= require('./models/account');
 
 // passport
@@ -18,7 +27,7 @@ var LocalStrategy = require('passport-local').Strategy
 
 var routes	= require('./routes/index')
 
-var port 	= 80;
+var port 	= 443;
 var app 	= new express();
 
 var imageDir	= path.join(__dirname, 'storage');
@@ -135,7 +144,7 @@ app.post('/upload', multer({ dest: './storage/'}).single('upl'), function(req,re
    console.log("great success, inserted into db")
   }
  })
- res.status(401).redirect('http://162.210.92.11');
+ res.status(401).redirect('https://iamverycool.com');
  //res.status(204).end();
 });
 
@@ -168,5 +177,5 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 */
-
-app.listen( port, function(){ console.log('listening on port '+port); } );
+server = https.createServer(https_options, app).listen(port, '162.210.92.11');
+//app.listen( port, function(){ console.log('listening on port '+port); } );
